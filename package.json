@@ -1,0 +1,25 @@
+{
+    "name": "cccontainer",
+    "displayName": "ClanCatsContainer",
+    "description": "Language support for the ClanCats Container syntax",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.66.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "ctn",
+            "aliases": ["CCContainer", "ctn"],
+            "extensions": [".ctn",".ctn.env"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "ctn",
+            "scopeName": "source.cccontainer",
+            "path": "./syntaxes/cccontainer.tmLanguage"
+        }]
+    }
+}
