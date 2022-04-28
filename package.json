@@ -2,9 +2,15 @@
     "name": "cccontainer",
     "displayName": "ClanCatsContainer",
     "description": "Language support for the ClanCats Container syntax",
-    "version": "0.0.1",
+    "icon": "resources/logo_ccc.png",
+    "version": "1.0.1",
+    "publisher": "mario-deluna",
     "engines": {
         "vscode": "^1.66.0"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ClanCats/vsc-cccontainer.git"
     },
     "categories": [
         "Programming Languages"

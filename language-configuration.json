@@ -26,5 +26,16 @@
         ["(", ")"],
         ["\"", "\""],
         ["'", "'"]
-    ]
+    ],
+    "folding": {
+        "offSide": true,
+        "markers": {
+            "start": "^\\s*#\\s*region\\b",
+            "end": "^\\s*#\\s*endregion\\b"
+        }
+    },
+    "indentationRules": {
+        "increaseIndentPattern": "^(@[a-zA-Z0-9._]+(: ?[a-zA-Z0-9_\\]+)?|:[a-zA-Z0-9._]+: ?{)$",
+        "decreaseIndentPattern": "^((?!.*?\\/\\*).*\\*/)?\\s*[\\)\\}\\]].*$"
+    }
 }
