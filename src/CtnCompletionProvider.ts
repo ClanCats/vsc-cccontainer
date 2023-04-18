@@ -94,6 +94,9 @@ function scanContainerCacheFileWithPHP(path: string, contents: string, phpBinary
     $data = [];
     $data['parameters'] = $containerRefl->getProperty('parameters')->getValue($container);
 
+    // get the services
+    $data['services'] = $containerRefl->getProperty('serviceResolverType')->getValue($container);
+
     echo json_encode($data);
     `;
 
@@ -108,8 +111,14 @@ function scanContainerCacheFileWithPHP(path: string, contents: string, phpBinary
         const data = JSON.parse(result);
 
         // assign the available parameters
-        availableParamterKeys.length = 0;
         availableParamterKeys.push(...Object.keys(data.parameters));
+
+        // assign the available services
+        availableServices.push(...Object.keys(data.services));
+
+        // console.log(data);
+
+        uniquifyAvailableServices();
     } catch (e) {
         console.error('error: ' + e);
     }
@@ -123,17 +132,52 @@ export class CtnCompletionProvider implements vscode.CompletionItemProvider<vsco
     ): vscode.ProviderResult<vscode.CompletionItem[]> {
         scanContainerCacheFile();
 
+        // figure out if the cursor is currently in parameter or service context
         const linePrefix = document.lineAt(position).text.substr(0, position.character);
         
+        const serviceRegex = /@([a-zA-Z0-9\._]+)?$/;
+        const parameterRegex = /:([a-zA-Z0-9\._]+)?$/;
+
+        if (serviceRegex.test(linePrefix)) {
+            // match the prefix and use it as a filter
+            const match: string = linePrefix.match(serviceRegex)?.[0].substring(1) ?? '';
+
+            const createCompletionItem = (str: string) => {
+                let item = new vscode.CompletionItem(str, vscode.CompletionItemKind.Class);
+                // range is based on the match
+                item.range = new vscode.Range(position.line, position.character - match.length, position.line, position.character);
+                return item;
+            }
+
+            // no specific service name was typed yet so just return all available services
+            if (match.length === 0) {
+                return availableServices.map((str) => createCompletionItem(str));
+            }
         
-        if (linePrefix.startsWith('@')) {
-            // use the available services as completion items
-            return availableServices.map((str) => new vscode.CompletionItem(str, vscode.CompletionItemKind.Class));
+            return availableServices
+                .filter((str) => str.startsWith(match))
+                .map((str) => createCompletionItem(str));
         }
 
-        if (linePrefix.startsWith(':')) {
-            // use the available parameters as completion items
-            return availableParamterKeys.map((str) => new vscode.CompletionItem(str, vscode.CompletionItemKind.Variable));
+        if (parameterRegex.test(linePrefix)) {
+            // match the prefix and use it as a filter
+            const match: string = linePrefix.match(parameterRegex)?.[0].substring(1) ?? '';
+
+            const createCompletionItem = (str: string) => {
+                let item = new vscode.CompletionItem(str, vscode.CompletionItemKind.Class);
+                // range is based on the match
+                item.range = new vscode.Range(position.line, position.character - match.length, position.line, position.character);
+                return item;
+            };
+
+            // no specific parameter name was typed yet so just return all available parameters
+            if (match.length === 0) {
+                return availableParamterKeys.map((str) => createCompletionItem(str));
+            }
+
+            return availableParamterKeys
+                .filter((str) => str.startsWith(match))
+                .map((str) => createCompletionItem(str));
         }
 
         return undefined;
