@@ -2,8 +2,13 @@
 
 All notable changes to the "cccontainer" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [1.1.0] - 2023-04-18
 
-## [Unreleased]
+### Added
+
+- Added simple languge server parsing build container cache files. 
+  This allows for autocompletion of services and parameters.
+
+## [v1.0.0]
 
 - Initial release
